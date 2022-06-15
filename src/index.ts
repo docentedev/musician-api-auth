@@ -9,6 +9,7 @@ const fastify = Fastify({
 })
 
 fastify.register(jwt, {
+  decode: { complete: true },
   secret: {
     private: process.env.PRIVATE_KEY,
     public: process.env.PUBLIC_KEY

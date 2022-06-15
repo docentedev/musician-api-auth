@@ -4,13 +4,16 @@ import Auth from '../../utils/Auth'
 
 const routes = async (fastify: FastifyInstance, _opts: any, done: Function) => {
   const qb = usersDb(fastify.pg)
-  fastify.get('/', async (req: CustomRequest, reply) => {
-    try {
-      const { page = 1, size = 10, sort = 'desc', order = 'id' } = req.query
-      const result = await qb.getAllPaginate({ page, size, sort, order })
-      reply.send(result)
-    } catch (error) {
-      reply.send(error)
+  fastify.get('/', {
+    preHandler: [Auth.middleware(fastify)],
+    handler: async (req: CustomRequest, reply) => {
+      try {
+        const { page = 1, size = 10, sort = 'desc', order = 'id' } = req.query
+        const result = await qb.getAllPaginate({ page, size, sort, order })
+        reply.send(result)
+      } catch (error) {
+        reply.send(error)
+      }
     }
   })
   fastify.post('/', {
@@ -27,10 +30,16 @@ const routes = async (fastify: FastifyInstance, _opts: any, done: Function) => {
     },
     handler: async (req: any, reply: any) => {
       try {
-        const data: { password: string } & any = req.body
-        data.password = await Auth.createToken(data.password)
-        const result = await qb.insert(data)
-        reply.send(result)
+        if (process.env.FLAG_USER_CREATE === 'true') {
+          const data: { password: string } & any = req.body
+          data.password = await Auth.createToken(data.password)
+          const result = await qb.insert(data)
+          reply.send(result)
+        } else {
+          reply.send({
+            message: 'FLAG_USER_CREATE=false'
+          })
+        }
       } catch (error) {
         reply.send(error)
       }

@@ -21,7 +21,7 @@ CREATE TABLE public.account (
 );
 ```
 
-- Key Pair [sign: { algorithm: 'RS256' }]
+- Generate Key Pair [sign: { algorithm: 'RS256' }]
 
 ```plain
 openssl genrsa -out private.key 2048
