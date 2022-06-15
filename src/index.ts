@@ -21,6 +21,7 @@ fastify.register(require('@fastify/postgres'), {
   connectionString: process.env.DATABASE_URL
 })
 
+fastify.register(require('./routes/health'), { prefix: 'api/v1/health' })
 fastify.register(usersRoute, { prefix: 'api/v1/users' })
 
 fastify.listen({
