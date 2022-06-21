@@ -1,6 +1,9 @@
 import Fastify from 'fastify'
 const jwt = require('@fastify/jwt')
 import usersRoute from './routes/users'
+import rolesRoute from './routes/roles'
+import profilesRoute from './routes/profiles'
+
 require('dotenv').config()
 
 const PORT = process.env.PORT || 3001
@@ -23,6 +26,8 @@ fastify.register(require('@fastify/postgres'), {
 
 fastify.register(require('./routes/health'), { prefix: 'api/v1/health' })
 fastify.register(usersRoute, { prefix: 'api/v1/users' })
+fastify.register(rolesRoute, { prefix: 'api/v1/roles' })
+fastify.register(profilesRoute, { prefix: 'api/v1/profiles' })
 
 fastify.listen({
   port: Number(PORT),
